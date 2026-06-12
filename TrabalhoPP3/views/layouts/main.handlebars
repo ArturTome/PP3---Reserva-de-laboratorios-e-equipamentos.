@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Reservou! Labou!</title>
+
+<link
+rel="stylesheet"
+href="/css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        Reservou! Labou!
+    </div>
+
+    {{#if usuario}}
+
+    <ul>
+
+        <li>
+            <a href="/">
+                Início
+            </a>
+        </li>
+
+        <li>
+            <a href="/laboratorios">
+                Laboratórios
+            </a>
+        </li>
+
+        <li>
+            <a href="/equipamentos">
+                Equipamentos
+            </a>
+        </li>
+
+        <li>
+            <a href="/reservas">
+                Reservas
+            </a>
+        </li>
+
+        <li>
+            <a href="/logout">
+                Sair
+            </a>
+        </li>
+
+    </ul>
+
+    {{/if}}
+
+</nav>
+
+<main>
+
+    {{{body}}}
+
+</main>
+
+</body>
+
+</html>
