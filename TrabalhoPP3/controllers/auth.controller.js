@@ -1,150 +1,216 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const { Usuario } = require("../models");
 
-const {
-    Usuario
-} = require('../models');
+class AuthController {
 
-exports.loginPage = (req, res) => {
+    /* ==========================
+       TELAS
+    ========================== */
 
-    res.render('auth/login');
-};
+    static loginPage(req, res) {
 
-exports.cadastroPage = (req, res) => {
+        res.render("auth/login");
 
-    res.render('auth/cadastro');
-};
+    }
 
-exports.cadastro = async (req, res) => {
+    static cadastroPage(req, res) {
 
-    try {
+        res.render("auth/cadastro");
 
-        const {
-            login,
-            senha
-        } = req.body;
+    }
 
-        const existe =
-            await Usuario.findOne({
+    /* ==========================
+       LOGIN
+    ========================== */
+
+    static async login(req, res) {
+
+        try {
+
+            const { login, senha } = req.body;
+
+            if (!login || !senha) {
+
+                return res.render("auth/login", {
+                    erro: "Preencha todos os campos."
+                });
+
+            }
+
+            const usuario = await Usuario.findOne({
                 where: {
                     Login: login
                 }
             });
 
-        if (existe) {
+            if (!usuario) {
 
-            return res.render(
-                'auth/cadastro',
-                {
-                    erro:
-                        'Usuário já cadastrado'
-                }
-            );
+                return res.render("auth/login", {
+                    erro: "Usuário não encontrado."
+                });
+
+            }
+
+            const senhaCorreta =
+                await bcrypt.compare(
+                    senha,
+                    usuario.Senha
+                );
+
+            if (!senhaCorreta) {
+
+                return res.render("auth/login", {
+                    erro: "Senha incorreta."
+                });
+
+            }
+
+            req.session.usuario = {
+
+                id: usuario.IdUser,
+
+                login: usuario.Login,
+
+                admin: usuario.StatusADM
+
+            };
+
+            res.redirect("/");
+
         }
 
-        const hash =
-            await bcrypt.hash(
-                senha,
-                10
-            );
+        catch (erro) {
 
-        await Usuario.create({
+            console.log(erro);
 
-            Login: login,
+            res.status(500).send("Erro interno.");
 
-            Senha: hash,
+        }
 
-            StatusADM: false
+    }
+
+    /* ==========================
+       CADASTRO
+    ========================== */
+
+    static async cadastrar(req, res) {
+
+        try {
+
+            const {
+
+                login,
+
+                senha
+
+            } = req.body;
+
+            if (!login || !senha) {
+
+                return res.render("auth/cadastro", {
+
+                    erro: "Todos os campos são obrigatórios."
+
+                });
+
+            }
+
+            const existe =
+
+                await Usuario.findOne({
+
+                    where: {
+
+                        Login: login
+
+                    }
+
+                });
+
+            if (existe) {
+
+                return res.render("auth/cadastro", {
+
+                    erro: "Login já existente."
+
+                });
+
+            }
+
+            const hash =
+
+                await bcrypt.hash(
+
+                    senha,
+
+                    10
+
+                );
+
+            await Usuario.create({
+
+                Login: login,
+
+                Senha: hash,
+
+                StatusADM: false
+
+            });
+
+            res.redirect("/login");
+
+        }
+
+        catch (erro) {
+
+            console.log(erro);
+
+            res.status(500).send("Erro.");
+
+        }
+
+    }
+
+    /* ==========================
+       LOGOUT
+    ========================== */
+
+    static logout(req, res) {
+
+        req.session.destroy(() => {
+
+            res.redirect("/login");
+
         });
 
-        res.redirect('/login');
-
-    } catch (erro) {
-
-        console.log(erro);
-
-        res.render(
-            'auth/cadastro',
-            {
-                erro:
-                    'Erro ao cadastrar usuário'
-            }
-        );
     }
-};
 
-exports.login = async (req, res) => {
+    /* ==========================
+       API JSON
+    ========================== */
 
-    try {
+    static async apiUsuarios(req, res) {
 
-        const {
-            login,
-            senha
-        } = req.body;
+        const usuarios =
 
-        const usuario =
-            await Usuario.findOne({
-                where: {
-                    Login: login
-                }
+            await Usuario.findAll({
+
+                attributes: [
+
+                    "IdUser",
+
+                    "Login",
+
+                    "StatusADM"
+
+                ]
+
             });
 
-        if (!usuario) {
+        res.json(usuarios);
 
-            return res.render(
-                'auth/login',
-                {
-                    erro:
-                        'Usuário não encontrado'
-                }
-            );
-        }
-
-        const senhaValida =
-            await bcrypt.compare(
-                senha,
-                usuario.Senha
-            );
-
-        if (!senhaValida) {
-
-            return res.render(
-                'auth/login',
-                {
-                    erro:
-                        'Senha incorreta'
-                }
-            );
-        }
-
-        req.session.usuario = {
-
-            id: usuario.IdUser,
-
-            login: usuario.Login,
-
-            admin: usuario.StatusADM
-        };
-
-        res.redirect('/');
-
-    } catch (erro) {
-
-        console.log(erro);
-
-        res.render(
-            'auth/login',
-            {
-                erro:
-                    'Erro interno'
-            }
-        );
     }
-};
 
-exports.logout = (req, res) => {
+}
 
-    req.session.destroy(() => {
-
-        res.redirect('/login');
-    });
-};
+module.exports = AuthController;

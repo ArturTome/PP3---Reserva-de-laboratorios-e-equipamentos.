@@ -1,26 +1,35 @@
-const { Sequelize } = require('sequelize');
+const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-    'ReservasLabs',
-    'root',
-    'senha',
+
+    process.env.DB_NAME,
+
+    process.env.DB_USER,
+
+    process.env.DB_PASSWORD,
+
     {
-        host: 'localhost',
-        dialect: 'mysql',
+
+        host:
+
+            process.env.DB_HOST,
+
+        dialect:
+
+            "mysql",
 
         logging: false,
 
         define: {
-            freezeTableName: true
-        },
 
-        pool: {
-            max: 10,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
+            timestamps: false,
+
+            freezeTableName: true
+
         }
+
     }
+
 );
 
 module.exports = sequelize;

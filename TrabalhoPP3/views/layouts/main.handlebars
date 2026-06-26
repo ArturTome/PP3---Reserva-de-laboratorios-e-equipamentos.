@@ -1,76 +1,70 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<title>Reservou! Labou!</title>
+    <title>ReservasLabs</title>
 
-<link
-rel="stylesheet"
-href="/css/style.css">
+    <link
+        rel="stylesheet"
+        href="/css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="/css/navbar.css">
+
+    <link
+        rel="stylesheet"
+        href="/css/forms.css">
+
+    <link
+        rel="stylesheet"
+        href="/css/tables.css">
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css">
 
 </head>
 
 <body>
 
-<nav class="navbar">
+    {{> navbar}}
 
-    <div class="logo">
+    <main class="container">
 
-        Reservou! Labou!
-    </div>
+        {{#if success}}
 
-    {{#if usuario}}
+            <div class="alert success">
 
-    <ul>
+                {{success}}
 
-        <li>
-            <a href="/">
-                Início
-            </a>
-        </li>
+            </div>
 
-        <li>
-            <a href="/laboratorios">
-                Laboratórios
-            </a>
-        </li>
+        {{/if}}
 
-        <li>
-            <a href="/equipamentos">
-                Equipamentos
-            </a>
-        </li>
+        {{#if error}}
 
-        <li>
-            <a href="/reservas">
-                Reservas
-            </a>
-        </li>
+            <div class="alert error">
 
-        <li>
-            <a href="/logout">
-                Sair
-            </a>
-        </li>
+                {{error}}
 
-    </ul>
+            </div>
 
-    {{/if}}
+        {{/if}}
 
-</nav>
+        {{{body}}}
 
-<main>
+    </main>
 
-    {{{body}}}
-
-</main>
+    <script src="/js/main.js"></script>
 
 </body>
 

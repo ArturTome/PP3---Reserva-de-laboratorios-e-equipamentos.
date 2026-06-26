@@ -1,30 +1,60 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Equipamento = sequelize.define('Equipamento', {
+const Equipamento = sequelize.define("Equipamento",{
 
-    IdEquip: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+    IdEquip:{
+
+        type:DataTypes.INTEGER,
+
+        primaryKey:true,
+
+        autoIncrement:true
+
     },
 
-    NomeEquip: {
-        type: DataTypes.STRING(50),
-        allowNull: false
+    NomeEquip:{
+
+        type:DataTypes.STRING(30),
+
+        allowNull:false,
+
+        unique:true
+
     },
 
-    Descricao: {
-        type: DataTypes.TEXT
+    Durabilidade:{
+
+        type:DataTypes.STRING(12)
+
     },
 
-    Quantidade: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1
+    Quantidade:{
+
+        type:DataTypes.INTEGER,
+
+        defaultValue:1
+
+    },
+
+    HoraEntrada:{
+
+        type:DataTypes.TIME,
+
+        allowNull:false
+
+    },
+
+    HoraSaida:{
+
+        type:DataTypes.TIME,
+
+        allowNull:false
+
     }
-},
-{
-    timestamps: false
+
+},{
+    timestamps:false
 });
 
 module.exports = Equipamento;

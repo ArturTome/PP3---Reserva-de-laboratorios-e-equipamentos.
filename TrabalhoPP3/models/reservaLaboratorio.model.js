@@ -1,36 +1,52 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {DataTypes}=require("sequelize");
+const sequelize=require("../config/database");
 
-const ReservaLaboratorio = sequelize.define('ReservaLaboratorio', {
+const ReservaLaboratorio=sequelize.define("ReservaLaboratorio",{
 
-    IdReservaLab: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+    IdReservaLab:{
+
+        type:DataTypes.INTEGER,
+
+        primaryKey:true,
+
+        autoIncrement:true
+
     },
 
-    DataReserva: {
-        type: DataTypes.DATEONLY,
-        allowNull: false
+    DataReserva:{
+
+        type:DataTypes.DATEONLY
+
     },
 
-    HoraEntrada: {
-        type: DataTypes.TIME,
-        allowNull: false
+    HoraEntrada:{
+
+        type:DataTypes.TIME
+
     },
 
-    HoraSaida: {
-        type: DataTypes.TIME,
-        allowNull: false
+    HoraSaida:{
+
+        type:DataTypes.TIME
+
     },
 
-    QuantidadePessoas: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    QuantidadePessoas:{
+
+        type:DataTypes.INTEGER
+
+    },
+
+    DataCriacao:{
+
+        type:DataTypes.DATE,
+
+        defaultValue:DataTypes.NOW
+
     }
-},
-{
-    timestamps: false
+
+},{
+    timestamps:false
 });
 
-module.exports = ReservaLaboratorio;
+module.exports=ReservaLaboratorio;

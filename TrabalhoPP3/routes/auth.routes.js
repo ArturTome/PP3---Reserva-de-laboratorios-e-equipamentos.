@@ -1,33 +1,48 @@
-const express = require('express');
-
+const express = require("express");
 const router = express.Router();
 
-const authController =
-require('../controllers/auth.controller');
+const AuthController = require("../controllers/auth.controller");
+
+/* =====================================
+   TELAS
+===================================== */
 
 router.get(
-    '/login',
-    authController.loginPage
+    "/login",
+    AuthController.loginPage
+);
+
+router.get(
+    "/cadastro",
+    AuthController.cadastroPage
+);
+
+/* =====================================
+   AUTENTICAÇÃO
+===================================== */
+
+router.post(
+    "/login",
+    AuthController.login
 );
 
 router.post(
-    '/login',
-    authController.login
+    "/cadastro",
+    AuthController.cadastrar
 );
 
 router.get(
-    '/cadastro',
-    authController.cadastroPage
+    "/logout",
+    AuthController.logout
 );
 
-router.post(
-    '/cadastro',
-    authController.cadastro
-);
+/* =====================================
+   API
+===================================== */
 
 router.get(
-    '/logout',
-    authController.logout
+    "/api/usuarios",
+    AuthController.apiUsuarios
 );
 
 module.exports = router;

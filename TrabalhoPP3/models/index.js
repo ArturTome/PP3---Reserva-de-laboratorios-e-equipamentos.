@@ -1,81 +1,139 @@
-const Usuario = require('./usuario.model');
-const Laboratorio = require('./laboratorio.model');
-const Equipamento = require('./equipamento.model');
+const Usuario = require("./Usuario");
+const Laboratorio = require("./Laboratorio");
+const Equipamento = require("./Equipamento");
+const DiasDispo = require("./DiasDispo");
+const LabDiasDispo = require("./LabDiasDispo");
+const EquipDiasDispo = require("./EquipDiasDispo");
+const ReservaLaboratorio = require("./ReservaLaboratorio");
+const ReservaEquipamento = require("./ReservaEquipamento");
+const Reserva_Equipamento = require("./Reserva_Equipamento");
+const Relatorio = require("./Relatorio");
 
-const ReservaLaboratorio =
-require('./reservaLaboratorio.model');
+/* ==========================================
+   USUÁRIO
+========================================== */
 
-const ReservaEquipamento =
-require('./reservaEquipamento.model');
+Usuario.hasMany(ReservaLaboratorio,{
+    foreignKey:"IdUser"
+});
 
-const Relatorio =
-require('./relatorio.model');
+ReservaLaboratorio.belongsTo(Usuario,{
+    foreignKey:"IdUser"
+});
 
-/* ======================
-   LABORATÓRIOS
-====================== */
+Usuario.hasMany(ReservaEquipamento,{
+    foreignKey:"IdUser"
+});
 
-Usuario.hasMany(
-    ReservaLaboratorio,
-    {
-        foreignKey: 'IdUser'
-    }
-);
+ReservaEquipamento.belongsTo(Usuario,{
+    foreignKey:"IdUser"
+});
 
-ReservaLaboratorio.belongsTo(
-    Usuario,
-    {
-        foreignKey: 'IdUser'
-    }
-);
+Usuario.hasMany(Relatorio,{
+    foreignKey:"IdUser"
+});
+
+Relatorio.belongsTo(Usuario,{
+    foreignKey:"IdUser"
+});
+
+/* ==========================================
+   LABORATÓRIO
+========================================== */
 
 Laboratorio.hasMany(
     ReservaLaboratorio,
     {
-        foreignKey: 'IdLab'
+        foreignKey:"IdLab"
     }
 );
 
 ReservaLaboratorio.belongsTo(
     Laboratorio,
     {
-        foreignKey: 'IdLab'
+        foreignKey:"IdLab"
     }
 );
 
-/* ======================
-   EQUIPAMENTOS
-====================== */
+/* ==========================================
+   RELATÓRIO
+========================================== */
 
-Usuario.hasMany(
-    ReservaEquipamento,
+ReservaLaboratorio.hasMany(
+    Relatorio,
     {
-        foreignKey: 'IdUser'
+        foreignKey:"IdReservaLab"
     }
 );
 
-ReservaEquipamento.belongsTo(
-    Usuario,
+Relatorio.belongsTo(
+    ReservaLaboratorio,
     {
-        foreignKey: 'IdUser'
+        foreignKey:"IdReservaLab"
     }
 );
 
-Equipamento.hasMany(
-    ReservaEquipamento,
+/* ==========================================
+   DIAS DISPONÍVEIS LABORATÓRIO
+========================================== */
+
+Laboratorio.belongsToMany(
+    DiasDispo,
     {
-        foreignKey: 'IdEquip'
+        through:LabDiasDispo,
+        foreignKey:"IdLab"
     }
 );
 
-ReservaEquipamento.belongsTo(
+DiasDispo.belongsToMany(
+    Laboratorio,
+    {
+        through:LabDiasDispo,
+        foreignKey:"IdDia"
+    }
+);
+
+/* ==========================================
+   DIAS DISPONÍVEIS EQUIPAMENTOS
+========================================== */
+
+Equipamento.belongsToMany(
+    DiasDispo,
+    {
+        through:EquipDiasDispo,
+        foreignKey:"IdEquip"
+    }
+);
+
+DiasDispo.belongsToMany(
     Equipamento,
     {
-        foreignKey: 'IdEquip'
+        through:EquipDiasDispo,
+        foreignKey:"IdDia"
     }
 );
 
-module.exports = {
+/* ==========================================
+   RESERVA EQUIPAMENTO
+========================================== */
+
+ReservaEquipamento.belongsToMany(
+    Equipamento,
+    {
+        through:Reserva_Equipamento,
+        foreignKey:"IdReservaEquip"
+    }
+);
+
+Equipamento.belongsToMany(
+    ReservaEquipamento,
+    {
+        through:Reserva_Equipamento,
+        foreignKey:"IdEquip"
+    }
+);
+
+module.exports={
 
     Usuario,
 
@@ -83,9 +141,18 @@ module.exports = {
 
     Equipamento,
 
+    DiasDispo,
+
+    LabDiasDispo,
+
+    EquipDiasDispo,
+
     ReservaLaboratorio,
 
     ReservaEquipamento,
 
+    Reserva_Equipamento,
+
     Relatorio
+
 };

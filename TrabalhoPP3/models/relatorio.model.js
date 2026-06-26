@@ -1,25 +1,34 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const {DataTypes}=require("sequelize");
+const sequelize=require("../config/database");
 
-const Relatorio = sequelize.define('Relatorio', {
+const Relatorio=sequelize.define("Relatorio",{
 
-    IdRelatorio: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+    IdRelatorio:{
+
+        type:DataTypes.INTEGER,
+
+        autoIncrement:true,
+
+        primaryKey:true
+
     },
 
-    DataGeracao: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+    DataGeracao:{
+
+        type:DataTypes.DATE,
+
+        defaultValue:DataTypes.NOW
+
     },
 
-    Conteudo: {
-        type: DataTypes.TEXT
+    Descricao:{
+
+        type:DataTypes.TEXT
+
     }
-},
-{
-    timestamps: false
+
+},{
+    timestamps:false
 });
 
-module.exports = Relatorio;
+module.exports=Relatorio;

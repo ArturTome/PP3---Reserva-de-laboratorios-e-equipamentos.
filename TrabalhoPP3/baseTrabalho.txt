@@ -1,60 +1,26 @@
 Reservou-Labou/
 │
 ├── server.js
+├── package.json
+├── .env.example
+├── .gitignore
+├── README.md
 │
 ├── config/
-│   └── database.js
-│
-├── models/
-│   ├── usuario.model.js
-│   ├── laboratorio.model.js
-│   ├── equipamento.model.js
-│   ├── reservaLaboratorio.model.js
-│   └── index.js
-│
-├── controllers/
-│   ├── auth.controller.js
-│   ├── laboratorio.controller.js
-│   ├── equipamento.controller.js
-│   └── reserva.controller.js
-│
-├── routes/
-│   ├── auth.routes.js
-│   ├── laboratorio.routes.js
-│   ├── equipamento.routes.js
-│   └── reserva.routes.js
-│
-├── middlewares/
-│   ├── auth.js
-│   └── admin.js
+│     database.js
 │
 ├── public/
-│   ├── css/
-│   │   └── style.css
-│   │
-│   └── js/
-│       └── horarios.js
+│     css/
+│     js/
+│     img/
+│
+├── routes/
+│
+├── controllers/
+│
+├── middlewares/
+│
+├── models/
 │
 └── views/
-    │
-    ├── layouts/
-    │   └── main.handlebars
-    │
-    ├── auth/
-    │   ├── login.handlebars
-    │   └── cadastro.handlebars
-    │
-    ├── laboratorio/
-    │   ├── listar.handlebars
-    │   ├── cadastrar.handlebars
-    │   └── editar.handlebars
-    │
-    ├── equipamento/
-    │   ├── listar.handlebars
-    │   ├── cadastrar.handlebars
-    │   └── editar.handlebars
-    │
-    └── reserva/
-        ├── laboratorio.handlebars
-        ├── equipamento.handlebars
-        └── minhasReservas.handlebars
+      layouts/

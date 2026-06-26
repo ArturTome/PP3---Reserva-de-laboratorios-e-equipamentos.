@@ -1,115 +1,256 @@
-const express = require('express');
-const session = require('express-session');
-const exphbs = require('express-handlebars');
-const path = require('path');
+require("dotenv").config();
 
-const sequelize = require('./config/database');
+const express = require("express");
+const session = require("express-session");
+const flash = require("connect-flash");
+const path = require("path");
 
-const authRoutes = require('./routes/auth.routes');
-const laboratorioRoutes = require('./routes/laboratorio.routes');
-const equipamentoRoutes = require('./routes/equipamento.routes');
-const reservaRoutes = require('./routes/reserva.routes');
-const relatorioRoutes = require('./routes/relatorio.routes');
+const { engine } = require("express-handlebars");
+
+const sequelize = require("./config/database");
+
+const routes = require("./routes");
+
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
-/* -------------------------
+/* ======================================================
    CONFIGURAÇÕES
--------------------------- */
+====================================================== */
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+
+    extended: true
+
+}));
+
 app.use(express.json());
 
+/* ======================================================
+   CSS / JS / IMAGENS
+====================================================== */
+
 app.use(
-    session({
-        secret: 'reservou-labou-secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 4
-        }
-    })
+
+    express.static(
+
+        path.join(__dirname, "public")
+
+    )
+
 );
+
+/* ======================================================
+   HANDLEBARS
+====================================================== */
 
 app.engine(
-    'handlebars',
-    exphbs.engine({
-        defaultLayout: 'main'
+
+    "handlebars",
+
+    engine({
+
+        defaultLayout: "main",
+
+        layoutsDir:
+
+            path.join(
+
+                __dirname,
+
+                "views/layouts"
+
+            ),
+
+        partialsDir:
+
+            path.join(
+
+                __dirname,
+
+                "views/partials"
+
+            )
+
     })
+
 );
 
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.set(
 
-app.use(express.static(path.join(__dirname, 'public')));
+    "view engine",
 
-/* -------------------------
+    "handlebars"
+
+);
+
+app.set(
+
+    "views",
+
+    path.join(
+
+        __dirname,
+
+        "views"
+
+    )
+
+);
+
+/* ======================================================
+   SESSION
+====================================================== */
+
+app.use(
+
+    session({
+
+        secret:
+
+            process.env.SESSION_SECRET ||
+
+            "ReservasLabs",
+
+        resave: false,
+
+        saveUninitialized: false,
+
+        cookie: {
+
+            maxAge:
+
+                1000 * 60 * 60 * 24
+
+        }
+
+    })
+
+);
+
+/* ======================================================
+   FLASH
+====================================================== */
+
+app.use(
+
+    flash()
+
+);
+
+/* ======================================================
    VARIÁVEIS GLOBAIS
--------------------------- */
+====================================================== */
 
 app.use((req, res, next) => {
 
     res.locals.usuario =
+
         req.session.usuario || null;
 
+    res.locals.success =
+
+        req.flash("success");
+
+    res.locals.error =
+
+        req.flash("error");
+
     next();
+
 });
 
-/* -------------------------
+/* ======================================================
    ROTAS
--------------------------- */
+====================================================== */
 
-app.use('/', authRoutes);
+app.use(
 
-app.use('/laboratorios', laboratorioRoutes);
+    "/",
 
-app.use('/equipamentos', equipamentoRoutes);
+    routes
 
-app.use('/reservas', reservaRoutes);
+);
 
-app.use('/relatorios', relatorioRoutes);
-
-/* -------------------------
-   HOME
--------------------------- */
-
-app.get('/', (req, res) => {
-
-    if (!req.session.usuario) {
-        return res.redirect('/login');
-    }
-
-    res.render('home');
-});
-
-/* -------------------------
+/* ======================================================
    404
--------------------------- */
+====================================================== */
 
 app.use((req, res) => {
 
-    res.status(404).render('404');
+    res.status(404).render(
+
+        "errors/404",
+
+        {
+
+            titulo:
+
+                "Página não encontrada"
+
+        }
+
+    );
+
 });
 
-/* -------------------------
-   BANCO + SERVIDOR
--------------------------- */
+/* ======================================================
+   ERROR HANDLER
+====================================================== */
+
+app.use(
+
+    errorHandler
+
+);
+
+/* ======================================================
+   DATABASE
+====================================================== */
 
 sequelize
-    .sync()
-    .then(() => {
 
-        app.listen(3000, () => {
+.sync({
+
+    alter: true
+
+})
+
+.then(() => {
+
+    console.log(
+
+        "Banco sincronizado."
+
+    );
+
+    const PORT =
+
+        process.env.PORT ||
+
+        3000;
+
+    app.listen(
+
+        PORT,
+
+        () => {
 
             console.log(
-                'Servidor rodando em http://localhost:3000'
-            );
-        });
-    })
-    .catch((erro) => {
 
-        console.error(
-            'Erro ao conectar ao banco:',
-            erro
-        );
-    });
+                `Servidor iniciado em http://localhost:${PORT}`
+
+            );
+
+        }
+
+    );
+
+})
+
+.catch(err => {
+
+    console.log(err);
+
+});
